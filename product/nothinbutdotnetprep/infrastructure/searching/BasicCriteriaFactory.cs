@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace nothinbutdotnetprep.infrastructure.searching
@@ -18,12 +19,19 @@ namespace nothinbutdotnetprep.infrastructure.searching
 
         public Criteria<ItemToSearch> equal_to_any(params PropertyType[] values)
         {
-            return new AnonymousCriteria<ItemToSearch>(x => new List<PropertyType>(values).Contains(accessor(x)));
+            return create_using(new IsEqualToAny<PropertyType>(values));
+        }
+
+        public Criteria<ItemToSearch> create_using(Criteria<PropertyType> real_criteria)
+        {
+            return new PropertyCriteria<ItemToSearch, PropertyType>(accessor,
+                                                                    real_criteria);
         }
 
         public Criteria<ItemToSearch> not_equal_to_any(params PropertyType[] values)
         {
             return new NotCriteria<ItemToSearch>(equal_to_any(values));
         }
+
     }
 }
